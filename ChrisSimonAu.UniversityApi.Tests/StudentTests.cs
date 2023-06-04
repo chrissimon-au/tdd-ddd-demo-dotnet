@@ -54,6 +54,7 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
 
     [Theory()]
     [InlineData("Test Student")]
+    [InlineData("Another Student")]
     public async Task GivenIHaveRegistered_WhenICheckMyDetails(string studentName)
     {
         var client = _factory.CreateClient();
