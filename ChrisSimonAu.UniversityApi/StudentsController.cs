@@ -19,7 +19,7 @@ public class StudentsController : ControllerBase
         var student = Student.Register(request);
         await context.Students.AddAsync(student);
         await context.SaveChangesAsync();
-        return Created($"/students/{student.Id}", student);
+        return CreatedAtAction("Get", new { Id = student.Id }, student);
     }
 
     [HttpGet]
