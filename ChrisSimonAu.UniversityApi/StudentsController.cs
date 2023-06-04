@@ -27,6 +27,6 @@ public class StudentsController : ControllerBase
     public async Task<ActionResult<Student>> Get([FromRoute] Guid id)
     {
         var student = await context.Students.FindAsync(id);
-        return Ok(student);
+        return student == null ? NotFound() : Ok(student);
     }
 }
