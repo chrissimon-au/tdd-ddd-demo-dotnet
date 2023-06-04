@@ -2,7 +2,6 @@ namespace ChrisSimonAu.UniversityApi.Tests;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
-using System.Net.Http.Json;
 
 public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -13,18 +12,19 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         _factory = factory;
     }
 
+    private StudentApi CreateStudentApi() => new StudentApi(_factory.CreateClient());
+
     [Fact]
     public async Task GivenIAmAStudent_WhenIRegister() 
     {
-        var client = _factory.CreateClient();
+        var api = CreateStudentApi();
 
         var registerStudent = new RegisterStudentRequest { Name = Guid.NewGuid().ToString() };
 
-        var response = await client.PostAsync("/students", JsonContent.Create(registerStudent));
-        var student = await response.Content.ReadFromJsonAsync<StudentResponse>();
+        var (response, student) = await api.RegisterStudent(registerStudent);
         
         ItShouldRegisterANewStudent(response);
-        ItShouldAllocateANewId(response, student);
+        ItShouldAllocateANewId(student);
         ItShouldShowWhereToLocateNewStudent(response, student);
         ItShouldConfirmStudentDetails(registerStudent, student);
     }
@@ -34,7 +34,7 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
     }
 
-    private void ItShouldAllocateANewId(HttpResponseMessage response, StudentResponse? student)
+    private void ItShouldAllocateANewId(StudentResponse? student)
     {
         Assert.NotNull(student);
         Assert.NotEqual(Guid.Empty, student.Id);
@@ -57,17 +57,18 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
     [InlineData("Another Student")]
     public async Task GivenIHaveRegistered_WhenICheckMyDetails(string studentName)
     {
-        var client = _factory.CreateClient();
+        var api = CreateStudentApi();
 
         var registerStudent = new RegisterStudentRequest { Name = studentName };
 
-        var response = await client.PostAsync("/students", JsonContent.Create(registerStudent));
+        var (response, _) = await api.RegisterStudent(registerStudent);
+        
         var newStudentLocation = response.Headers.Location;
 
-        var checkedStudentResponse = await client.GetAsync(newStudentLocation);
-        var student = await checkedStudentResponse.Content.ReadFromJsonAsync<StudentResponse>();
+        var (checkedStudentResponse, checkedStudent) = await api.GetStudent(newStudentLocation);
+
         ItShouldFindTheNewStudent(checkedStudentResponse);
-        ItShouldConfirmStudentDetails(registerStudent, student);
+        ItShouldConfirmStudentDetails(registerStudent, checkedStudent);
     }
 
     private void ItShouldFindTheNewStudent(HttpResponseMessage response)
