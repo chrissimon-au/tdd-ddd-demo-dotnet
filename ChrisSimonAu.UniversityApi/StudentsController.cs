@@ -17,6 +17,6 @@ public class StudentsController : ControllerBase
     [Route("/students/{id}")]
     public IActionResult Get([FromRoute] Guid id)
     {
-        return Ok();
+        return Ok(new Student { Id = id, Name = "Test Student" });
     }
 }
