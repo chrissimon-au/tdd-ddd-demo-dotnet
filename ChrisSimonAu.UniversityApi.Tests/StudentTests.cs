@@ -51,4 +51,24 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(request.Name, response!.Name);
     }
+
+    [Fact]
+    public async Task GivenIHaveRegistered_WhenICheckMyDetails()
+    {
+        var client = _factory.CreateClient();
+
+        var registerStudent = new RegisterStudentRequest { Name = "Test Student" };
+
+        var response = await client.PostAsync("/students", JsonContent.Create(registerStudent));
+        var newStudentLocation = response.Headers.Location;
+
+        var checkedStudentResponse = await client.GetAsync(newStudentLocation);
+
+        ItShouldFindTheNewStudent(checkedStudentResponse);
+    }
+
+    private void ItShouldFindTheNewStudent(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+    }
 }
