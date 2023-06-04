@@ -63,8 +63,9 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         var newStudentLocation = response.Headers.Location;
 
         var checkedStudentResponse = await client.GetAsync(newStudentLocation);
-
+        var student = await checkedStudentResponse.Content.ReadFromJsonAsync<StudentResponse>();
         ItShouldFindTheNewStudent(checkedStudentResponse);
+        ItShouldConfirmStudentDetails(registerStudent, student);
     }
 
     private void ItShouldFindTheNewStudent(HttpResponseMessage response)
