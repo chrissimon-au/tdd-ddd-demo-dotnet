@@ -52,12 +52,13 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(request.Name, response!.Name);
     }
 
-    [Fact]
-    public async Task GivenIHaveRegistered_WhenICheckMyDetails()
+    [Theory()]
+    [InlineData("Test Student")]
+    public async Task GivenIHaveRegistered_WhenICheckMyDetails(string studentName)
     {
         var client = _factory.CreateClient();
 
-        var registerStudent = new RegisterStudentRequest { Name = "Test Student" };
+        var registerStudent = new RegisterStudentRequest { Name = studentName };
 
         var response = await client.PostAsync("/students", JsonContent.Create(registerStudent));
         var newStudentLocation = response.Headers.Location;
