@@ -12,4 +12,11 @@ public class StudentsController : ControllerBase
         var student = Student.Register(request);
         return Created($"/students/{student.Id}", student);
     }
+
+    [HttpGet]
+    [Route("/students/{id}")]
+    public IActionResult Get([FromRoute] Guid id)
+    {
+        return Ok();
+    }
 }
