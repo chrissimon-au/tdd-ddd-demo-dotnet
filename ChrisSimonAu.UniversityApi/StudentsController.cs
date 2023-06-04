@@ -6,10 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 [Route("[controller]")]
 public class StudentsController : ControllerBase
 {
+    private readonly UniversityContext context;
+
+    public StudentsController(UniversityContext context)
+    {
+        this.context = context;
+    }
+
     [HttpPost]
     public ActionResult Register([FromBody] RegisterStudentRequest request)
     {
         var student = Student.Register(request);
+        context.Students.Add(student);
+        context.SaveChanges();
         return Created($"/students/{student.Id}", student);
     }
 
@@ -17,6 +26,7 @@ public class StudentsController : ControllerBase
     [Route("/students/{id}")]
     public IActionResult Get([FromRoute] Guid id)
     {
-        return Ok(new Student { Id = id, Name = "Test Student" });
+        var student = context.Students.Find(id);
+        return Ok(student);
     }
 }
