@@ -19,10 +19,18 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         var response = await client.PostAsync("/students", null);
 
         ItShouldRegisterANewStudent(response);
+        await ItShouldAllocateANewId(response);
     }
 
     private void ItShouldRegisterANewStudent(HttpResponseMessage response)
     {
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
+    }
+
+    private async Task ItShouldAllocateANewId(HttpResponseMessage response)
+    {
+        var student = await response.Content.ReadFromJsonAsync<StudentResponse>();
+        Assert.NotNull(student);
+        Assert.NotEqual(Guid.Empty, student.Id);
     }
 }
