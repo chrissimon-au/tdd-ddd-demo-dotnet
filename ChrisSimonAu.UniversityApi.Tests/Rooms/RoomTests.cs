@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc.Testing;
+namespace ChrisSimonAu.UniversityApi.Tests.Rooms;
 
-namespace ChrisSimonAu.UniversityApi.Tests;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -11,13 +11,12 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
         _factory = factory;
     }
 
-
     [Fact]
     public async Task GivenIAmAnAdmin_WhenISetupANewRoom()
     {
-        var client = _factory.CreateClient();
+        var api = new RoomApi(_factory.CreateClient());
 
-        var response = await client.PostAsync("/rooms", null);
+        var response = await api.SetupRoom();
 
         ItShouldSetupANewRoom(response);
     }
