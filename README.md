@@ -4,6 +4,8 @@ Are you interested in using Domain-Driven Design (DDD) to create maintainable an
 
 This repository contains a demo of applying Test-Driven Development (TDD) in the implementation of a simple CRUD system and gradually refactoring towards DDD tactical patterns as more complex requirements arise.
 
+It is used to support a [live-coding conference talk](https://sessionize.com/s/chris-simon/tdd-ddd-c-from-the-ground-up-a-live-coding-demo/64826).
+
 This demo is in DotNet.  Other demos are:
 
 * [Java](https://github.com/chrissimon-au/tdd-ddd-demo-java)
