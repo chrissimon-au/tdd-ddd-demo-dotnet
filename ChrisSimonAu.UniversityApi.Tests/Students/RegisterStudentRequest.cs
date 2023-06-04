@@ -1,4 +1,4 @@
-namespace ChrisSimonAu.UniversityApi.Tests;
+namespace ChrisSimonAu.UniversityApi.Tests.Students;
 
 public class RegisterStudentRequest
 {
