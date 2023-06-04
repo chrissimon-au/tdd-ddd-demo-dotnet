@@ -1,6 +1,8 @@
 namespace ChrisSimonAu.UniversityApi.Tests;
 
 using Microsoft.AspNetCore.Mvc.Testing;
+using System;
+using System.Net.Http.Json;
 
 public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -16,10 +18,14 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var client = _factory.CreateClient();
 
-        var response = await client.PostAsync("/students", null);
+        var registerStudent = new RegisterStudentRequest { Name = Guid.NewGuid().ToString() };
 
+        var response = await client.PostAsync("/students", JsonContent.Create(registerStudent));
+        var student = await response.Content.ReadFromJsonAsync<StudentResponse>();
+        
         ItShouldRegisterANewStudent(response);
-        await ItShouldAllocateANewId(response);
+        ItShouldAllocateANewId(response, student);
+        ItShouldShowWhereToLocateNewStudent(response, student);
     }
 
     private void ItShouldRegisterANewStudent(HttpResponseMessage response)
@@ -27,10 +33,16 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
     }
 
-    private async Task ItShouldAllocateANewId(HttpResponseMessage response)
+    private void ItShouldAllocateANewId(HttpResponseMessage response, StudentResponse? student)
     {
-        var student = await response.Content.ReadFromJsonAsync<StudentResponse>();
         Assert.NotNull(student);
         Assert.NotEqual(Guid.Empty, student.Id);
+    }
+
+    private void ItShouldShowWhereToLocateNewStudent(HttpResponseMessage response, StudentResponse? student)
+    {
+        var location = response.Headers.Location;
+        Assert.NotNull(location);
+        Assert.Equal($"/students/{student!.Id}", location.ToString());
     }
 }
