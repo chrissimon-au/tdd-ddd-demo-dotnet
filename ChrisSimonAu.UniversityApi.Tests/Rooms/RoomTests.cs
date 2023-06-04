@@ -16,13 +16,20 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var api = new RoomApi(_factory.CreateClient());
 
-        var response = await api.SetupRoom();
+        var (response, room) = await api.SetupRoom();
 
         ItShouldSetupANewRoom(response);
+        ItShouldAllocateANewId(room);
     }
 
     private void ItShouldSetupANewRoom(HttpResponseMessage response)
     {
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
+    }
+
+    private void ItShouldAllocateANewId(RoomResponse? room)
+    {
+        Assert.NotNull(room);
+        Assert.NotEqual(room.Id, Guid.Empty);
     }
 }
