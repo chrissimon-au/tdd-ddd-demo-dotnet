@@ -1,5 +1,6 @@
 namespace ChrisSimonAu.UniversityApi;
 using Microsoft.EntityFrameworkCore;
+using Students;
 
 public class UniversityContext : DbContext
 {

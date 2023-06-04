@@ -1,4 +1,4 @@
-namespace ChrisSimonAu.UniversityApi;
+namespace ChrisSimonAu.UniversityApi.Students;
 
 using Microsoft.AspNetCore.Mvc;
 
