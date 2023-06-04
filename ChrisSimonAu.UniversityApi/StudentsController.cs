@@ -14,19 +14,19 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult Register([FromBody] RegisterStudentRequest request)
+    public async Task<ActionResult<Student>> Register([FromBody] RegisterStudentRequest request)
     {
         var student = Student.Register(request);
-        context.Students.Add(student);
-        context.SaveChanges();
+        await context.Students.AddAsync(student);
+        await context.SaveChangesAsync();
         return Created($"/students/{student.Id}", student);
     }
 
     [HttpGet]
     [Route("/students/{id}")]
-    public IActionResult Get([FromRoute] Guid id)
+    public async Task<ActionResult<Student>> Get([FromRoute] Guid id)
     {
-        var student = context.Students.Find(id);
+        var student = await context.Students.FindAsync(id);
         return Ok(student);
     }
 }
