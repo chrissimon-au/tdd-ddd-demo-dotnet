@@ -1,0 +1,1 @@
+watchexec -e sln,csproj,cs dotnet test

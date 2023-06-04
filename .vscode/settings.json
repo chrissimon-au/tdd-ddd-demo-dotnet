@@ -1,0 +1,4 @@
+{
+    "dotnet-test-explorer.autoWatch": true,
+    "git.enabled": false
+}
