@@ -44,7 +44,7 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var location = response.Headers.Location;
         Assert.NotNull(location);
-        Assert.Equal($"/students/{student!.Id}", location.ToString());
+        Assert.Equal($"http://localhost/students/{student!.Id}", location.ToString());
     }
 
     private void ItShouldConfirmStudentDetails(RegisterStudentRequest request, StudentResponse? response)
