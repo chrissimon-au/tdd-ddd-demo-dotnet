@@ -25,7 +25,7 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         
         ItShouldRegisterANewStudent(response);
         ItShouldAllocateANewId(student);
-        ItShouldShowWhereToLocateNewStudent(response, student);
+        ItShouldShowWhereToLocateNewStudent(response, api.UriForStudentId(student?.Id));
         ItShouldConfirmStudentDetails(registerStudent, student);
     }
 
@@ -40,11 +40,11 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotEqual(Guid.Empty, student.Id);
     }
 
-    private void ItShouldShowWhereToLocateNewStudent(HttpResponseMessage response, StudentResponse? student)
+    private void ItShouldShowWhereToLocateNewStudent(HttpResponseMessage response, Uri studentUri)
     {
         var location = response.Headers.Location;
         Assert.NotNull(location);
-        Assert.Equal($"http://localhost/students/{student!.Id}", location.ToString());
+        Assert.Equal(studentUri, location);
     }
 
     private void ItShouldConfirmStudentDetails(RegisterStudentRequest request, StudentResponse? response)
@@ -74,5 +74,22 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
     private void ItShouldFindTheNewStudent(HttpResponseMessage response)
     {
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GivenIHaveTheWrongId_WhenICheckMyDetails()
+    {
+        var api = CreateStudentApi();
+
+        Guid wrongId = Guid.NewGuid();
+
+        var (response, _) = await api.GetStudent(wrongId);
+
+        ItShouldNotFindTheStudent(response);
+    }
+
+    private void ItShouldNotFindTheStudent(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
     }
 }
