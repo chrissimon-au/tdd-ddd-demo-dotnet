@@ -54,14 +54,15 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var api = new RoomApi(_factory.CreateClient());
 
-        var roomRequest = new SetupRoomRequest { Name = "Test Room" };
+        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 5 };
         var (response, _) = await api.SetupRoom(roomRequest);
 
         var newRoomLocation = response.Headers.Location;
 
-        var checkedResponse = await api.GetRoom(newRoomLocation);
+        var (checkedResponse, checkedRoom) = await api.GetRoom(newRoomLocation);
 
         ItShouldFindTheNewRoom(checkedResponse);
+        ItShouldConfirmRoomDetails(roomRequest, checkedRoom);
     }
 
     private void ItShouldFindTheNewRoom(HttpResponseMessage response)

@@ -21,9 +21,10 @@ public class RoomApi
         return new Uri($"http://localhost/rooms/{roomId}");
     }
 
-    public async Task<HttpResponseMessage> GetRoom(Uri? roomLocation)
+    public async Task<(HttpResponseMessage, RoomResponse?)> GetRoom(Uri? roomLocation)
     {
         var response = await client.GetAsync(roomLocation);
-        return response;
+        var room = await response.Content.ReadFromJsonAsync<RoomResponse>();
+        return (response, room);
     }
 }
