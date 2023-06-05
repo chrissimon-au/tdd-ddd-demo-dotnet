@@ -15,4 +15,9 @@ public class RoomApi
         var room = await response.Content.ReadFromJsonAsync<RoomResponse>();
         return (response, room);
     }
+
+    public Uri UriForRoomId(Guid? roomId)
+    {
+        return new Uri($"http://localhost/rooms/{roomId}");
+    }
 }
