@@ -15,8 +15,8 @@ public class RoomsController : ControllerBase
 
     [HttpGet]
     [Route("/rooms/{id}")]
-    public IActionResult Get()
+    public IActionResult Get([FromRoute] Guid id)
     {
-        return Ok();
+        return Ok(new Room { Id = id, Name = "Test Room", Capacity = 5 });
     }
 }
