@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 public class RoomsController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Setup()
+    public IActionResult Setup([FromBody] SetupRoomRequest request)
     {
-        var room = Room.Setup();
+        var room = Room.Setup(request);
         return Created($"http://localhost/rooms/{room.Id}", room);
     }
 }
