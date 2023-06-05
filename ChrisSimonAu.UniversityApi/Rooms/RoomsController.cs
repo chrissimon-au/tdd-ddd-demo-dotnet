@@ -6,17 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 [Route("[controller]")]
 public class RoomsController : ControllerBase
 {
+    private readonly UniversityContext context;
+
+    public RoomsController(UniversityContext context)
+    {
+        this.context = context;
+    }
+
     [HttpPost]
-    public IActionResult Setup([FromBody] SetupRoomRequest request)
+    public async Task<ActionResult<Room>> Setup([FromBody] SetupRoomRequest request)
     {
         var room = Room.Setup(request);
+        await context.Rooms.AddAsync(room);
+        await context.SaveChangesAsync();
         return CreatedAtAction("Get", new { Id = room.Id }, room);
     }
 
     [HttpGet]
     [Route("/rooms/{id}")]
-    public IActionResult Get([FromRoute] Guid id)
+    public async Task<ActionResult<Room>> Get([FromRoute] Guid id)
     {
-        return Ok(new Room { Id = id, Name = "Test Room", Capacity = 5 });
+        var room = await context.Rooms.FindAsync(id);
+        return Ok(room);
     }
 }
