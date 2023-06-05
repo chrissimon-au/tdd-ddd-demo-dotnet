@@ -9,6 +9,7 @@ public class RoomsController : ControllerBase
     [HttpPost]
     public IActionResult Setup()
     {
-        return Created("", Room.Setup());
+        var room = Room.Setup();
+        return Created($"http://localhost/rooms/{room.Id}", room);
     }
 }
