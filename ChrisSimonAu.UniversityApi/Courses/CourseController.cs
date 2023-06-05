@@ -9,6 +9,7 @@ public class CoursesController : ControllerBase
     [HttpPost]
     public IActionResult IncludeInCatalog()
     {
-        return Created("", Course.IncludeInCatalog());
+        var course = Course.IncludeInCatalog();
+        return Created($"http://localhost/courses/{course.Id}", course);
     }
 }
