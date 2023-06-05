@@ -12,4 +12,11 @@ public class RoomsController : ControllerBase
         var room = Room.Setup(request);
         return Created($"http://localhost/rooms/{room.Id}", room);
     }
+
+    [HttpGet]
+    [Route("/rooms/{id}")]
+    public IActionResult Get()
+    {
+        return Ok();
+    }
 }
