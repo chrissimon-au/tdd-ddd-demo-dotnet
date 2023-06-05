@@ -51,6 +51,7 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
 
     [Theory()]
     [InlineData("Test Room", 5)]
+    [InlineData("Another Room", 10)]
     public async Task GivenIHaveSetupARoom_WhenICheckItsDetails(string roomName, int capacity)
     {
         var api = new RoomApi(_factory.CreateClient());
