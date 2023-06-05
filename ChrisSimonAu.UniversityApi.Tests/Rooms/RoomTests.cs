@@ -71,4 +71,20 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GivenIHaveTheWrongId_WhenICheckTheRoom()
+    {
+        var api = new RoomApi(_factory.CreateClient());
+        Guid wrongId = Guid.NewGuid();
+
+        var (response, room) = await api.GetRoom(wrongId);
+
+        ItShouldNotFindTheRoom(response);
+    }
+
+    private void ItShouldNotFindTheRoom(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+    }
 }
