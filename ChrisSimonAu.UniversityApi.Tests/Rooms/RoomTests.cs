@@ -48,4 +48,24 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(roomRequest.Name, room?.Name);
         Assert.Equal(roomRequest.Capacity, room?.Capacity);
     }
+
+    [Fact]
+    public async Task GivenIHaveSetupARoom_WhenICheckItsDetails()
+    {
+        var api = new RoomApi(_factory.CreateClient());
+
+        var roomRequest = new SetupRoomRequest { Name = "Test Room" };
+        var (response, _) = await api.SetupRoom(roomRequest);
+
+        var newRoomLocation = response.Headers.Location;
+
+        var checkedResponse = await api.GetRoom(newRoomLocation);
+
+        ItShouldFindTheNewRoom(checkedResponse);
+    }
+
+    private void ItShouldFindTheNewRoom(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+    }
 }
