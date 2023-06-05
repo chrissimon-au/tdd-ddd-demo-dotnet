@@ -9,6 +9,6 @@ public class CoursesController : ControllerBase
     [HttpPost]
     public IActionResult IncludeInCatalog()
     {
-        return Created("", null);
+        return Created("", new Course { Id = Guid.NewGuid() });
     }
 }
