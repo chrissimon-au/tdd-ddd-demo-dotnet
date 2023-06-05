@@ -9,6 +9,7 @@ public class StudentsController : ControllerBase
     [HttpPost]
     public ActionResult Register()
     {
-        return Created("", Student.Register());
+        var student = Student.Register();
+        return Created($"/students/{student.Id}", student);
     }
 }
