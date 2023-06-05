@@ -15,4 +15,9 @@ public class CourseApi
         var course = await response.Content.ReadFromJsonAsync<CourseResponse>();
         return (response, course);
     }
+
+    public Uri UriForCourseId(Guid? id)
+    {
+        return new Uri($"http://localhost/courses/{id}");
+    }
 }
