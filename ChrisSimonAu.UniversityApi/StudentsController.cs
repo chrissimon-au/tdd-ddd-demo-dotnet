@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 public class StudentsController : ControllerBase
 {
     [HttpPost]
-    public ActionResult Register()
+    public ActionResult Register([FromBody] RegisterStudentRequest request)
     {
-        var student = Student.Register();
+        var student = Student.Register(request);
         return Created($"/students/{student.Id}", student);
     }
 }

@@ -8,8 +8,8 @@ public class Student
 
     public string? Name {get; set;}
 
-    public static Student Register()
+    public static Student Register(RegisterStudentRequest request)
     {
-        return new Student { Id = Guid.NewGuid() };
+        return new Student { Id = Guid.NewGuid(), Name = request.Name };
     }
 }
