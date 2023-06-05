@@ -17,12 +17,20 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
         HttpClient client = _factory.CreateClient();
 
         var response = await client.PostAsync("/courses", null);
+        var course = await response.Content.ReadFromJsonAsync<CourseResponse>();
 
         ItShouldIncludeTheCourseInTheCatalog(response);
+        ItShouldAllocateANewId(course);
     }
 
     private void ItShouldIncludeTheCourseInTheCatalog(HttpResponseMessage response)
     {
         Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
+    }
+
+    private void ItShouldAllocateANewId(CourseResponse? course)
+    {
+        Assert.NotNull(course);
+        Assert.NotEqual(Guid.Empty, course.Id);
     }
 }
