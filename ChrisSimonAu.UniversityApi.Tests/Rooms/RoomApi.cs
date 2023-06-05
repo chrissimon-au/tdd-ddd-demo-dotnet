@@ -27,4 +27,7 @@ public class RoomApi
         var room = await response.Content.ReadFromJsonAsync<RoomResponse>();
         return (response, room);
     }
+
+    public async Task<(HttpResponseMessage, RoomResponse?)> GetRoom(Guid id)
+        => await GetRoom(UriForRoomId(id));
 }
