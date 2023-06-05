@@ -14,11 +14,10 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task GivenIAmAnAdmin_WhenIIncludeANewCourseInTheCatalog()
     {
-        HttpClient client = _factory.CreateClient();
+        var api = new CourseApi(_factory.CreateClient());
 
-        var response = await client.PostAsync("/courses", null);
-        var course = await response.Content.ReadFromJsonAsync<CourseResponse>();
-
+        var (response, course) = await api.IncludeInCatalog();
+        
         ItShouldIncludeTheCourseInTheCatalog(response);
         ItShouldAllocateANewId(course);
     }
