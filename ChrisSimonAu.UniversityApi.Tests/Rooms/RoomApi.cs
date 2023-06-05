@@ -9,9 +9,9 @@ public class RoomApi
         this.client = client;
     }
 
-    public async Task<(HttpResponseMessage, RoomResponse?)> SetupRoom()
+    public async Task<(HttpResponseMessage, RoomResponse?)> SetupRoom(SetupRoomRequest roomRequest)
     {
-        var response = await client.PostAsync("/rooms", null);
+        var response = await client.PostAsync("/rooms", JsonContent.Create(roomRequest));
         var room = await response.Content.ReadFromJsonAsync<RoomResponse>();
         return (response, room);
     }

@@ -16,11 +16,13 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var api = new RoomApi(_factory.CreateClient());
 
-        var (response, room) = await api.SetupRoom();
+        var roomRequest = new SetupRoomRequest { Name = Guid.NewGuid().ToString(), Capacity = 5 };
+        var (response, room) = await api.SetupRoom(roomRequest);
 
         ItShouldSetupANewRoom(response);
         ItShouldAllocateANewId(room);
         ItShouldShowWhereToLocateNewRoom(response, api.UriForRoomId(room?.Id));
+        ItShouldConfirmRoomDetails(roomRequest, room);
     }
 
     private void ItShouldSetupANewRoom(HttpResponseMessage response)
@@ -39,5 +41,11 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
         var location = response.Headers.Location;
         Assert.NotNull(location);
         Assert.Equal(roomUri, location);
+    }
+
+    private void ItShouldConfirmRoomDetails(SetupRoomRequest roomRequest, RoomResponse? room)
+    {
+        Assert.Equal(roomRequest.Name, room?.Name);
+        Assert.Equal(roomRequest.Capacity, room?.Capacity);
     }
 }
