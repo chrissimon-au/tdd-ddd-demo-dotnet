@@ -27,6 +27,6 @@ public class RoomsController : ControllerBase
     public async Task<ActionResult<Room>> Get([FromRoute] Guid id)
     {
         var room = await context.Rooms.FindAsync(id);
-        return Ok(room);
+        return room == null ? NotFound() : Ok(room);
     }
 }
