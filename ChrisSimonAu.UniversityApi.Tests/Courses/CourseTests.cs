@@ -20,6 +20,7 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
         
         ItShouldIncludeTheCourseInTheCatalog(response);
         ItShouldAllocateANewId(course);
+        ItShouldShowWhereToLocateNewCourse(response, api.UriForCourseId(course?.Id));
     }
 
     private void ItShouldIncludeTheCourseInTheCatalog(HttpResponseMessage response)
@@ -31,5 +32,12 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.NotNull(course);
         Assert.NotEqual(Guid.Empty, course.Id);
+    }
+
+    private void ItShouldShowWhereToLocateNewCourse(HttpResponseMessage response, Uri courseUri)
+    {
+        var location = response.Headers.Location;
+        Assert.NotNull(location);
+        Assert.Equal(courseUri, location);
     }
 }
