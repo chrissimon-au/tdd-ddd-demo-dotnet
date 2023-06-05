@@ -49,12 +49,13 @@ public class RoomTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(roomRequest.Capacity, room?.Capacity);
     }
 
-    [Fact]
-    public async Task GivenIHaveSetupARoom_WhenICheckItsDetails()
+    [Theory()]
+    [InlineData("Test Room", 5)]
+    public async Task GivenIHaveSetupARoom_WhenICheckItsDetails(string roomName, int capacity)
     {
         var api = new RoomApi(_factory.CreateClient());
 
-        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 5 };
+        var roomRequest = new SetupRoomRequest { Name = roomName, Capacity = capacity };
         var (response, _) = await api.SetupRoom(roomRequest);
 
         var newRoomLocation = response.Headers.Location;
