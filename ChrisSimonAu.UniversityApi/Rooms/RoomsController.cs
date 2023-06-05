@@ -9,6 +9,6 @@ public class RoomsController : ControllerBase
     [HttpPost]
     public IActionResult Setup()
     {
-        return Created("", new Room { Id = Guid.NewGuid() });
+        return Created("", Room.Setup());
     }
 }
