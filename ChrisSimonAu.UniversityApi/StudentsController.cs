@@ -9,6 +9,6 @@ public class StudentsController : ControllerBase
     [HttpPost]
     public ActionResult Register()
     {
-        return Created("", new Student {Id = Guid.NewGuid()});
+        return Created("", Student.Register());
     }
 }
