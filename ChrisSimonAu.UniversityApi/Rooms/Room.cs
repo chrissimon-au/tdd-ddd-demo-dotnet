@@ -3,9 +3,12 @@ namespace ChrisSimonAu.UniversityApi.Rooms;
 public class Room
 {
     public Guid Id { get; set; }
+    public string? Name { get; set; }
 
-    public static Room Setup()
+    public int Capacity { get; set; }
+
+    public static Room Setup(SetupRoomRequest request)
     {
-        return new Room { Id = Guid.NewGuid() };
+        return new Room { Id = Guid.NewGuid(), Name = request.Name, Capacity = request.Capacity };
     }
 }
