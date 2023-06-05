@@ -26,6 +26,7 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         ItShouldRegisterANewStudent(response);
         ItShouldAllocateANewId(response, student);
         ItShouldShowWhereToLocateNewStudent(response, student);
+        ItShouldConfirmStudentDetails(registerStudent, student);
     }
 
     private void ItShouldRegisterANewStudent(HttpResponseMessage response)
@@ -44,5 +45,10 @@ public class StudentTests : IClassFixture<WebApplicationFactory<Program>>
         var location = response.Headers.Location;
         Assert.NotNull(location);
         Assert.Equal($"/students/{student!.Id}", location.ToString());
+    }
+
+    private void ItShouldConfirmStudentDetails(RegisterStudentRequest request, StudentResponse? response)
+    {
+        Assert.Equal(request.Name, response!.Name);
     }
 }
