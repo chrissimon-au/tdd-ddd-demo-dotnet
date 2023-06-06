@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 public class CoursesController : ControllerBase
 {
     [HttpPost]
-    public IActionResult IncludeInCatalog()
+    public ActionResult<Course> IncludeInCatalog([FromBody] IncludeCourseInCatalogRequest request)
     {
-        var course = Course.IncludeInCatalog();
+        var course = Course.IncludeInCatalog(request);
         return Created($"http://localhost/courses/{course.Id}", course);
     }
 }
