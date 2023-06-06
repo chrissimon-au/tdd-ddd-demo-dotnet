@@ -34,7 +34,7 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
 
         ItShouldEnrolMe(enrolmentResponse);
         ItShouldAllocateANewEnrolmentId(enrolment);
-        ItShouldConfirmEnrolmentDetails(enrolment, student);
+        ItShouldConfirmEnrolmentDetails(enrolment, student, course);
     }
 
     private void ItShouldEnrolMe(HttpResponseMessage enrolmentResponse)
@@ -48,8 +48,9 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotEqual(Guid.Empty, enrolment.Id);
     }
 
-    private void ItShouldConfirmEnrolmentDetails(EnrolmentResponse? enrolment, StudentResponse? student)
+    private void ItShouldConfirmEnrolmentDetails(EnrolmentResponse? enrolment, StudentResponse? student, CourseResponse? course)
     {
         Assert.Equal(student?.Id, enrolment?.StudentId);
+        Assert.Equal(course?.Id, enrolment?.CourseId);
     }
 }
