@@ -10,13 +10,9 @@ public class Course
     public string? Name { get; set; }
     public virtual Room? Room { get; set; }
     public virtual IEnumerable<Enrolment>? Enrolments { get; set; }
-    public static Course? IncludeInCatalog(IncludeCourseInCatalogRequest request, Room? room)
+    public static Course IncludeInCatalog(IncludeCourseInCatalogRequest request)
     {
-        if (room == null) 
-        {
-            return null;
-        }
-        return new Course { Id = Guid.NewGuid(), Name = request.Name, Room = room };
+        return new Course { Id = Guid.NewGuid(), Name = request.Name };
     }
 
     public Enrolment? Enrol(Student student)
