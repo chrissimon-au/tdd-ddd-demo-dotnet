@@ -10,6 +10,6 @@ public class EnrolingController : ControllerBase
     [Route("/students/{studentId}/courses")]
     public IActionResult EnrolInCourse([FromRoute] Guid studentId, [FromBody] EnrolStudentInCourseRequest request)
     {
-        return Created("", new Enrolment { Id = Guid.NewGuid() });
+        return Created("", new Enrolment { Id = Guid.NewGuid(), StudentId = studentId });
     }
 }
