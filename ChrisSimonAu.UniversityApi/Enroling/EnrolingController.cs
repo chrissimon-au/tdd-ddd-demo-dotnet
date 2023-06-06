@@ -22,13 +22,13 @@ public class EnrolingController : ControllerBase
         {
             return NotFound();
         }
-        
+
         var course = await context.Courses.FindAsync(request.CourseId);
         if (course == null)
         {
             return BadRequest();
         }
-        
-        return Created("", new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId });
+        var enrolment = new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId };
+        return Created($"http://localhost/enrolments/{enrolment.Id}", enrolment);
     }
 }
