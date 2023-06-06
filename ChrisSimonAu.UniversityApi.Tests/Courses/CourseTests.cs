@@ -109,4 +109,21 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
 
         ItShouldNotIncludeTheCourse(response);
     }
+
+    [Fact]
+    public async Task GivenIHaveTheWrongCourseId_WhenICheckTheCourseDetails()
+    {
+        var api = new CourseApi(_factory.CreateClient());
+
+        var wrongId = Guid.NewGuid();
+
+        var (response, _) = await api.GetCourse(api.UriForCourseId(wrongId));
+
+        ItShouldNotFindTheCourse(response);
+    }
+
+    private void ItShouldNotFindTheCourse(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+    }
 }
