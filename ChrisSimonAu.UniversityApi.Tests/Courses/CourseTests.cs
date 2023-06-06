@@ -16,11 +16,14 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var api = new CourseApi(_factory.CreateClient());
 
-        var (response, course) = await api.IncludeInCatalog();
+        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString() };
+
+        var (response, course) = await api.IncludeInCatalog(request);
         
         ItShouldIncludeTheCourseInTheCatalog(response);
         ItShouldAllocateANewId(course);
         ItShouldShowWhereToLocateNewCourse(response, api.UriForCourseId(course?.Id));
+        ItShouldConfirmCourseDetails(request, course);
     }
 
     private void ItShouldIncludeTheCourseInTheCatalog(HttpResponseMessage response)
@@ -39,5 +42,10 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
         var location = response.Headers.Location;
         Assert.NotNull(location);
         Assert.Equal(courseUri, location);
+    }
+
+    private void ItShouldConfirmCourseDetails(IncludeCourseInCatalogRequest request, CourseResponse? response)
+    {
+        Assert.Equal(request.Name, response?.Name);
     }
 }
