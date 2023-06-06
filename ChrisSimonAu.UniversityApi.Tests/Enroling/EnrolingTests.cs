@@ -134,4 +134,33 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GivenTheCourseIWantIsFull_WhenIEnrolInACourse()
+    {
+        var client = _factory.CreateClient();
+        var courseApi = new CourseApi(client);
+        var studentApi = new StudentApi(client);
+        var enrolmentApi = new EnrolmentApi(client);
+
+        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 3 };
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = "Test Course" };
+
+        var (_, course) = await courseApi.IncludeInCatalog(courseRequest, roomRequest);
+
+        var (_, student1) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 1" });
+        var (_, enrolment1) = await enrolmentApi.EnrolStudentInCourse(student1, course);
+
+        var (_, student2) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 2" });
+        var (_, enrolment2) = await enrolmentApi.EnrolStudentInCourse(student2, course);
+
+        var (_, student3) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 3" });
+        var (_, enrolment3) = await enrolmentApi.EnrolStudentInCourse(student3, course);
+
+
+        var (_, student) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 4" });
+        var (response, _) = await enrolmentApi.EnrolStudentInCourse(student, course);
+
+        ItShouldNotEnrolMeWithErrors(response);
+    }
 }
