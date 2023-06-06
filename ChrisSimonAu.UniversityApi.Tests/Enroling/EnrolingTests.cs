@@ -30,13 +30,20 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
         var studentRequest = new RegisterStudentRequest { Name = "Test student" };
         var (_, student) = await studentApi.RegisterStudent(studentRequest);
 
-        var enrolmentResponse = await enrolmentApi.EnrolStudentInCourse(student, course);
+        var (enrolmentResponse, enrolment) = await enrolmentApi.EnrolStudentInCourse(student, course);
 
         ItShouldEnrolMe(enrolmentResponse);
+        ItShouldAllocateANewEnrolmentId(enrolment);
     }
 
     private void ItShouldEnrolMe(HttpResponseMessage enrolmentResponse)
     {
         Assert.Equal(System.Net.HttpStatusCode.Created, enrolmentResponse.StatusCode);
+    }
+
+    private void ItShouldAllocateANewEnrolmentId(EnrolmentResponse? enrolment)
+    {
+        Assert.NotNull(enrolment);
+        Assert.NotEqual(Guid.Empty, enrolment.Id);
     }
 }
