@@ -77,4 +77,26 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(System.Net.HttpStatusCode.NotFound, enrolmentResponse.StatusCode);
     }
+
+    [Fact]
+    public async Task GivenIHaveTheWrongCourseId_WhenIEnrolInACourse()
+    {
+        var client = _factory.CreateClient();
+        var studentApi = new StudentApi(client);
+        var enrolmentApi = new EnrolmentApi(client);
+
+        var studentRequest = new RegisterStudentRequest { Name = "Test student" };
+        var (_, student) = await studentApi.RegisterStudent(studentRequest);
+
+        var course = new CourseResponse { Id = Guid.NewGuid() };
+
+        var (enrolmentResponse, _) = await enrolmentApi.EnrolStudentInCourse(student, course);
+
+        ItShouldNotEnrolMeWithErrors(enrolmentResponse);
+    }
+
+    private void ItShouldNotEnrolMeWithErrors(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }
