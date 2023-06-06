@@ -1,6 +1,7 @@
 namespace ChrisSimonAu.UniversityApi.Enroling;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("[controller]")]
@@ -28,6 +29,13 @@ public class EnrolingController : ControllerBase
         {
             return BadRequest();
         }
+
+        var numEnrolments = await context.Enrolments.CountAsync(e => e.CourseId == course.Id);
+        if (numEnrolments + 1 > course?.Room?.Capacity)
+        {
+            return BadRequest();
+        }
+
         var enrolment = new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId };
         
         await context.Enrolments.AddAsync(enrolment);
