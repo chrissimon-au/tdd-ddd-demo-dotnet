@@ -31,7 +31,7 @@ public class EnrolingController : ControllerBase
         }
 
         var numEnrolments = await context.Enrolments.CountAsync(e => e.CourseId == course.Id);
-        if (numEnrolments + 1 > course?.Room?.Capacity)
+        if (course?.Room?.WouldEnrolmentExceedCapacity(numEnrolments) ?? true)
         {
             return BadRequest();
         }
