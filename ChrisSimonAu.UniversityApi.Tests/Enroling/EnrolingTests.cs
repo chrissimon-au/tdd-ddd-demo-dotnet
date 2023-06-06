@@ -1,7 +1,6 @@
 namespace ChrisSimonAu.UniversityApi.Tests.Enroling;
 
 using Microsoft.AspNetCore.Mvc.Testing;
-using Rooms;
 using Courses;
 using Students;
 
@@ -22,10 +21,9 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
         var studentApi = new StudentApi(client);
         var enrolmentApi = new EnrolmentApi(client);
 
-        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 5 };
         var courseRequest = new IncludeCourseInCatalogRequest { Name = "Test Course" };
 
-        var (response, course) = await courseApi.IncludeInCatalog(courseRequest, roomRequest);
+        var (response, course) = await courseApi.IncludeInCatalog(courseRequest);
 
         var studentRequest = new RegisterStudentRequest { Name = "Test student" };
         var (_, student) = await studentApi.RegisterStudent(studentRequest);
@@ -67,10 +65,9 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
         var courseApi = new CourseApi(client);
         var enrolmentApi = new EnrolmentApi(client);
 
-        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 5 };
         var courseRequest = new IncludeCourseInCatalogRequest { Name = "Test Course" };
 
-        var (response, course) = await courseApi.IncludeInCatalog(courseRequest, roomRequest);
+        var (response, course) = await courseApi.IncludeInCatalog(courseRequest);
 
         var student = new StudentResponse { Id = Guid.NewGuid() };
 
@@ -114,10 +111,9 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
         var studentApi = new StudentApi(client);
         var enrolmentApi = new EnrolmentApi(client);
 
-        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 5 };
         var courseRequest = new IncludeCourseInCatalogRequest { Name = "Test Course" };
 
-        var (_, course) = await courseApi.IncludeInCatalog(courseRequest, roomRequest);
+        var (_, course) = await courseApi.IncludeInCatalog(courseRequest);
 
         var studentRequest = new RegisterStudentRequest { Name = "Test student" };
         var (_, student) = await studentApi.RegisterStudent(studentRequest);

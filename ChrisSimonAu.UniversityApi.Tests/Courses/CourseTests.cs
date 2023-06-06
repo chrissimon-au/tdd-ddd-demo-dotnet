@@ -1,6 +1,5 @@
 namespace ChrisSimonAu.UniversityApi.Tests.Courses;
 
-using ChrisSimonAu.UniversityApi.Tests.Rooms;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
@@ -16,14 +15,10 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GivenIAmAnAdmin_WhenIIncludeANewCourseInTheCatalog()
     {
         var api = new CourseApi(_factory.CreateClient());
-        var roomApi = new RoomApi(_factory.CreateClient());
 
-        var (_, room) = await roomApi.SetupRoom(new SetupRoomRequest { Name = "Test Room"} );
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString() };
 
-        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = room?.Id };
-        var roomRequest = new SetupRoomRequest { Name = "Test Room" };
-
-        var (response, course) = await api.IncludeInCatalog(courseRequest, roomRequest);
+        var (response, course) = await api.IncludeInCatalog(courseRequest);
         
         ItShouldIncludeTheCourseInTheCatalog(response);
         ItShouldAllocateANewId(course);
@@ -52,7 +47,6 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     private void ItShouldConfirmCourseDetails(IncludeCourseInCatalogRequest request, CourseResponse? response)
     {
         Assert.Equal(request.Name, response?.Name);
-        Assert.Equal(request.RoomId, response?.RoomId);
     }
 
     [Theory]
@@ -61,12 +55,10 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GivenIHaveIncludedACourse_WhenICheckTheCourseDetails(string courseName)
     {
         var api = new CourseApi(_factory.CreateClient());
-        var roomApi = new RoomApi(_factory.CreateClient());
 
         var courseRequest = new IncludeCourseInCatalogRequest { Name = courseName };
-        var roomRequest = new SetupRoomRequest { Name = "Test Room"};
 
-        var (response, _) = await api.IncludeInCatalog(courseRequest, roomRequest);
+        var (response, _) = await api.IncludeInCatalog(courseRequest);
 
         var newCourseLocation = response.Headers.Location;
 
@@ -81,33 +73,9 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
     }
 
-    [Fact]
-    public async Task GivenIHaveNotSetupARoom_WhenIIncludeACourse()
-    {
-        var api = new CourseApi(_factory.CreateClient());
-        
-        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString() };
-
-        var (response, course) = await api.IncludeInCatalog(courseRequest);
-
-        ItShouldNotIncludeTheCourse(response);
-    }
-
     private void ItShouldNotIncludeTheCourse(HttpResponseMessage response)
     {
         Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GivenIHaveTheWrongRoomId_WhenIIncludeACourse()
-    {
-        var api = new CourseApi(_factory.CreateClient());
-        
-        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = Guid.NewGuid() };
-
-        var (response, course) = await api.IncludeInCatalog(courseRequest);
-
-        ItShouldNotIncludeTheCourse(response);
     }
 
     [Fact]
