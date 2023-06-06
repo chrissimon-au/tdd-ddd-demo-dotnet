@@ -34,6 +34,7 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
 
         ItShouldEnrolMe(enrolmentResponse);
         ItShouldAllocateANewEnrolmentId(enrolment);
+        ItShouldConfirmEnrolmentDetails(enrolment, student);
     }
 
     private void ItShouldEnrolMe(HttpResponseMessage enrolmentResponse)
@@ -45,5 +46,10 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.NotNull(enrolment);
         Assert.NotEqual(Guid.Empty, enrolment.Id);
+    }
+
+    private void ItShouldConfirmEnrolmentDetails(EnrolmentResponse? enrolment, StudentResponse? student)
+    {
+        Assert.Equal(student?.Id, enrolment?.StudentId);
     }
 }
