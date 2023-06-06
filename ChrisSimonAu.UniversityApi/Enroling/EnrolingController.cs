@@ -33,7 +33,7 @@ public class EnrolingController : ControllerBase
         await context.Enrolments.AddAsync(enrolment);
         await context.SaveChangesAsync();
         
-        return Created($"http://localhost/enrolments/{enrolment.Id}", enrolment);
+        return CreatedAtAction("Get", new { Id = enrolment.Id }, enrolment);
     }
 
     [HttpGet]
