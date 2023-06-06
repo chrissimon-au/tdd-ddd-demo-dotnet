@@ -1,7 +1,6 @@
 namespace ChrisSimonAu.UniversityApi.Tests.Courses;
 
-public class CourseResponse
+public class IncludeCourseInCatalogRequest
 {
-    public Guid Id { get; set; }
     public string? Name { get; set; }
 }
