@@ -9,8 +9,10 @@ public class SchedulingApi
         this.client = client;
     }
 
-    public async Task<HttpResponseMessage> Schedule()
+    public async Task<(HttpResponseMessage, ScheduleResponse?)> Schedule()
     {
-        return await client.PostAsync("/schedules", null);
+        var response = await client.PostAsync("/schedules", null);
+        var schedule = await response.Content.ReadFromJsonAsync<ScheduleResponse>();
+        return (response, schedule);
     }
 }
