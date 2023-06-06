@@ -9,9 +9,9 @@ public class CourseApi
         this.client = client;
     }
 
-    public async Task<(HttpResponseMessage, CourseResponse?)> IncludeInCatalog()
+    public async Task<(HttpResponseMessage, CourseResponse?)> IncludeInCatalog(IncludeCourseInCatalogRequest request)
     {
-        var response = await client.PostAsync("/courses", null);
+        var response = await client.PostAsync("/courses", JsonContent.Create(request));
         var course = await response.Content.ReadFromJsonAsync<CourseResponse>();
         return (response, course);
     }
