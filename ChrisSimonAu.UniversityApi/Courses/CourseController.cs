@@ -19,7 +19,7 @@ public class CoursesController : ControllerBase
         var course = Course.IncludeInCatalog(request);
         await context.Courses.AddAsync(course);
         await context.SaveChangesAsync();
-        return Created($"http://localhost/courses/{course.Id}", course);
+        return CreatedAtAction("Get", new { Id = course.Id }, course);
     }
 
     [HttpGet]
