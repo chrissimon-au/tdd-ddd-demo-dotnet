@@ -14,7 +14,7 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Course>> IncludeInCatalog([FromBody] IncludeCourseInCatalogRequest request)
+    public async Task<ActionResult<CourseResponse>> IncludeInCatalog([FromBody] IncludeCourseInCatalogRequest request)
     {
         var room = context.Rooms.Find(request.RoomId);
         var course = Course.IncludeInCatalog(request, room);
@@ -24,14 +24,14 @@ public class CoursesController : ControllerBase
         }
         await context.Courses.AddAsync(course);
         await context.SaveChangesAsync();
-        return CreatedAtAction("Get", new { Id = course.Id }, course);
+        return CreatedAtAction("Get", new { Id = course.Id }, course.ToResponse());
     }
 
     [HttpGet]
     [Route("/courses/{id}")]
-    public async Task<ActionResult<Course>> Get([FromRoute] Guid id)
+    public async Task<ActionResult<CourseResponse>> Get([FromRoute] Guid id)
     {
         var course = await context.Courses.FindAsync(id);
-        return course == null ? NotFound() : Ok(course);
+        return course == null ? NotFound() : Ok(course.ToResponse());
     }
 }
