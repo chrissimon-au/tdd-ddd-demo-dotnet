@@ -20,14 +20,15 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
 
         var (_, room) = await roomApi.SetupRoom(new SetupRoomRequest { Name = "Test Room"} );
 
-        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = room?.Id };
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = room?.Id };
+        var roomRequest = new SetupRoomRequest { Name = "Test Room" };
 
-        var (response, course) = await api.IncludeInCatalog(request);
+        var (response, course) = await api.IncludeInCatalog(courseRequest, roomRequest);
         
         ItShouldIncludeTheCourseInTheCatalog(response);
         ItShouldAllocateANewId(course);
         ItShouldShowWhereToLocateNewCourse(response, api.UriForCourseId(course?.Id));
-        ItShouldConfirmCourseDetails(request, course);
+        ItShouldConfirmCourseDetails(courseRequest, course);
     }
 
     private void ItShouldIncludeTheCourseInTheCatalog(HttpResponseMessage response)
@@ -62,18 +63,17 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
         var api = new CourseApi(_factory.CreateClient());
         var roomApi = new RoomApi(_factory.CreateClient());
 
-        var (_, room) = await roomApi.SetupRoom(new SetupRoomRequest { Name = "Test Room"} );
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = courseName };
+        var roomRequest = new SetupRoomRequest { Name = "Test Room"};
 
-        var request = new IncludeCourseInCatalogRequest { Name = courseName, RoomId = room?.Id };
-
-        var (response, _) = await api.IncludeInCatalog(request);
+        var (response, _) = await api.IncludeInCatalog(courseRequest, roomRequest);
 
         var newCourseLocation = response.Headers.Location;
 
         var (checkedResponse, checkedCourse) = await api.GetCourse(newCourseLocation);
 
         ItShouldFindTheNewCourse(checkedResponse);
-        ItShouldConfirmCourseDetails(request, checkedCourse);
+        ItShouldConfirmCourseDetails(courseRequest, checkedCourse);
     }
 
     private void ItShouldFindTheNewCourse(HttpResponseMessage response)
@@ -86,9 +86,9 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var api = new CourseApi(_factory.CreateClient());
         
-        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString() };
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString() };
 
-        var (response, course) = await api.IncludeInCatalog(request);
+        var (response, course) = await api.IncludeInCatalog(courseRequest);
 
         ItShouldNotIncludeTheCourse(response);
     }
@@ -103,9 +103,9 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var api = new CourseApi(_factory.CreateClient());
         
-        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = Guid.NewGuid() };
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = Guid.NewGuid() };
 
-        var (response, course) = await api.IncludeInCatalog(request);
+        var (response, course) = await api.IncludeInCatalog(courseRequest);
 
         ItShouldNotIncludeTheCourse(response);
     }
