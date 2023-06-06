@@ -97,4 +97,16 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GivenIHaveTheWrongRoomId_WhenIIncludeACourse()
+    {
+        var api = new CourseApi(_factory.CreateClient());
+        
+        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = Guid.NewGuid() };
+
+        var (response, course) = await api.IncludeInCatalog(request);
+
+        ItShouldNotIncludeTheCourse(response);
+    }
 }
