@@ -4,8 +4,9 @@ public class Course
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }
+    public Guid? RoomId { get; set; }
     public static Course IncludeInCatalog(IncludeCourseInCatalogRequest request)
     {
-        return new Course { Id = Guid.NewGuid(), Name = request.Name };
+        return new Course { Id = Guid.NewGuid(), Name = request.Name, RoomId = request.RoomId };
     }
 }
