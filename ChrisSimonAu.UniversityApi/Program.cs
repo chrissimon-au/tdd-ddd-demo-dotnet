@@ -18,7 +18,9 @@ services.AddSingleton<DbConnection>(container =>
 services.AddDbContext<UniversityContext>((container, options) =>
 {
     var connection = container.GetRequiredService<DbConnection>();
-    options.UseSqlite(connection);
+    options
+        .UseLazyLoadingProxies()
+        .UseSqlite(connection);
 });
 
 builder.Services.AddControllers();
