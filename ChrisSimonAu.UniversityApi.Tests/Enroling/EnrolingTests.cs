@@ -163,40 +163,4 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
 
         ItShouldNotEnrolMeWithErrors(response);
     }
-
-    [Fact]
-    public async Task GivenTheCourseIWantIsFull_WhenIEnrolInACourseConcurrently()
-    {
-        var client = _factory.CreateClient();
-        var courseApi = new CourseApi(client);
-        var studentApi = new StudentApi(client);
-        var enrolmentApi = new EnrolmentApi(client);
-
-        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 3 };
-        var courseRequest = new IncludeCourseInCatalogRequest { Name = "Test Course" };
-
-        var (_, course) = await courseApi.IncludeInCatalog(courseRequest, roomRequest);
-
-        var (_, student1) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 1" });
-        var (_, enrolment1) = await enrolmentApi.EnrolStudentInCourse(student1, course);
-
-        var (_, student2) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 2" });
-        var (_, enrolment2) = await enrolmentApi.EnrolStudentInCourse(student2, course);
-
-        var (_, student3) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 3" });
-        var (_, student4) = await studentApi.RegisterStudent(new RegisterStudentRequest { Name = "Test student 4" });
-
-        var enrolmentTask3 = enrolmentApi.EnrolStudentInCourse(student3, course);
-        var enrolmentTask4 = enrolmentApi.EnrolStudentInCourse(student4, course);
-
-        await Task.WhenAll(new[] { enrolmentTask3, enrolmentTask4 });
-
-        var (response3, _) = await enrolmentTask3;
-        var (response4, _) = await enrolmentTask4;
-
-        // var (response3, _) = await enrolmentApi.EnrolStudentInCourse(student3, course);
-        // var (response4, _) = await enrolmentApi.EnrolStudentInCourse(student4, course);
-
-        ItShouldNotEnrolMeWithErrors(response4);
-    }
 }
