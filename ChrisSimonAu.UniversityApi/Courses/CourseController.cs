@@ -17,11 +17,11 @@ public class CoursesController : ControllerBase
     public async Task<ActionResult<Course>> IncludeInCatalog([FromBody] IncludeCourseInCatalogRequest request)
     {
         var room = context.Rooms.Find(request.RoomId);
-        if (room == null) 
+        var course = Course.IncludeInCatalog(request, room);
+        if (course == null)
         {
             return BadRequest();
         }
-        var course = Course.IncludeInCatalog(request);
         await context.Courses.AddAsync(course);
         await context.SaveChangesAsync();
         return CreatedAtAction("Get", new { Id = course.Id }, course);
