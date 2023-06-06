@@ -30,6 +30,7 @@ public class EnrolingController : ControllerBase
         }
 
         var enrolment = course.Enrol(student);
+        
         if (enrolment == null)
         {
             return BadRequest();
