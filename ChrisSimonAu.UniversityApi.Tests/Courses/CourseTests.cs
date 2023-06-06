@@ -1,5 +1,6 @@
 namespace ChrisSimonAu.UniversityApi.Tests.Courses;
 
+using ChrisSimonAu.UniversityApi.Tests.Rooms;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
@@ -15,8 +16,11 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GivenIAmAnAdmin_WhenIIncludeANewCourseInTheCatalog()
     {
         var api = new CourseApi(_factory.CreateClient());
+        var roomApi = new RoomApi(_factory.CreateClient());
 
-        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString() };
+        var (_, room) = await roomApi.SetupRoom(new SetupRoomRequest { Name = "Test Room"} );
+
+        var request = new IncludeCourseInCatalogRequest { Name = Guid.NewGuid().ToString(), RoomId = room?.Id };
 
         var (response, course) = await api.IncludeInCatalog(request);
         
@@ -47,6 +51,7 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     private void ItShouldConfirmCourseDetails(IncludeCourseInCatalogRequest request, CourseResponse? response)
     {
         Assert.Equal(request.Name, response?.Name);
+        Assert.Equal(request.RoomId, response?.RoomId);
     }
 
     [Theory]
@@ -55,8 +60,11 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task GivenIHaveIncludedACourse_WhenICheckTheCourseDetails(string courseName)
     {
         var api = new CourseApi(_factory.CreateClient());
+        var roomApi = new RoomApi(_factory.CreateClient());
 
-        var request = new IncludeCourseInCatalogRequest { Name = courseName };
+        var (_, room) = await roomApi.SetupRoom(new SetupRoomRequest { Name = "Test Room"} );
+
+        var request = new IncludeCourseInCatalogRequest { Name = courseName, RoomId = room?.Id };
 
         var (response, _) = await api.IncludeInCatalog(request);
 
