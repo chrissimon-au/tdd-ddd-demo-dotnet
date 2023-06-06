@@ -21,10 +21,6 @@ public class Course
 
     public Enrolment? Enrol(Student student)
     {
-        if (Enrolments?.Count() + 1 > Room?.Capacity)
-        {
-            return null;
-        }
         return Enrolment.StudentEnroled(student, this);
     }
 
