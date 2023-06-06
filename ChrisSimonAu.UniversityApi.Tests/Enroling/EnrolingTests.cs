@@ -105,4 +105,33 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GivenIHaveEnroled_WhenICheckMyEnrolment()
+    {
+        var client = _factory.CreateClient();
+        var courseApi = new CourseApi(client);
+        var studentApi = new StudentApi(client);
+        var enrolmentApi = new EnrolmentApi(client);
+
+        var roomRequest = new SetupRoomRequest { Name = "Test Room", Capacity = 5 };
+        var courseRequest = new IncludeCourseInCatalogRequest { Name = "Test Course" };
+
+        var (_, course) = await courseApi.IncludeInCatalog(courseRequest, roomRequest);
+
+        var studentRequest = new RegisterStudentRequest { Name = "Test student" };
+        var (_, student) = await studentApi.RegisterStudent(studentRequest);
+
+        var (response, _) = await enrolmentApi.EnrolStudentInCourse(student, course);
+
+        var (checkedResponse, checkedEnrolment) = await enrolmentApi.GetEnrolment(response.Headers.Location);
+
+        ItShouldFindTheEnrolment(checkedResponse);
+        ItShouldConfirmEnrolmentDetails(checkedEnrolment, student, course);
+    }
+
+    private void ItShouldFindTheEnrolment(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+    }
 }

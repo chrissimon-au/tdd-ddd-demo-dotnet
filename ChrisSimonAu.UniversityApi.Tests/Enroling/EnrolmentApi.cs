@@ -19,4 +19,11 @@ public class EnrolmentApi
         var enrolment = await response.Content.ReadFromJsonAsync<EnrolmentResponse>();
         return (response, enrolment);
     }
+
+    public async Task<(HttpResponseMessage, EnrolmentResponse?)> GetEnrolment(Uri? enrolmentUri)
+    {
+        var response = await client.GetAsync(enrolmentUri);
+        var enrolment = await response.Content.ReadFromJsonAsync<EnrolmentResponse>();
+        return (response, enrolment);
+    }
 }
