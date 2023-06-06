@@ -35,6 +35,7 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
         ItShouldEnrolMe(enrolmentResponse);
         ItShouldAllocateANewEnrolmentId(enrolment);
         ItShouldConfirmEnrolmentDetails(enrolment, student, course);
+        ItShouldShowWhereToCheckEnrolmentDetails(enrolmentResponse, enrolment);
     }
 
     private void ItShouldEnrolMe(HttpResponseMessage enrolmentResponse)
@@ -52,6 +53,11 @@ public class EnrolingTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(student?.Id, enrolment?.StudentId);
         Assert.Equal(course?.Id, enrolment?.CourseId);
+    }
+
+    private void ItShouldShowWhereToCheckEnrolmentDetails(HttpResponseMessage response, EnrolmentResponse? enrolment)
+    {
+        Assert.Equal(new Uri($"http://localhost/enrolments/{enrolment?.Id}"), response.Headers.Location);
     }
 
     [Fact]
