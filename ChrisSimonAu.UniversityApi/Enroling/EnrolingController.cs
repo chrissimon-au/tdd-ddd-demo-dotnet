@@ -1,7 +1,6 @@
 namespace ChrisSimonAu.UniversityApi.Enroling;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("[controller]")]
@@ -16,7 +15,7 @@ public class EnrolingController : ControllerBase
 
     [HttpPost]
     [Route("/students/{studentId}/courses")]
-    public async Task<ActionResult<Enrolment>> EnrolInCourse([FromRoute] Guid studentId, [FromBody] EnrolStudentInCourseRequest request)
+    public async Task<ActionResult<EnrolmentResponse>> EnrolInCourse([FromRoute] Guid studentId, [FromBody] EnrolStudentInCourseRequest request)
     {
         var student = await context.Students.FindAsync(studentId);
         if (student == null)
@@ -31,17 +30,21 @@ public class EnrolingController : ControllerBase
         }
 
         var enrolment = course.Enrol(student);
+        if (enrolment == null)
+        {
+            return BadRequest();
+        }
         
         await context.Enrolments.AddAsync(enrolment);
         await context.SaveChangesAsync();
         
-        return CreatedAtAction("Get", new { Id = enrolment.Id }, enrolment);
+        return CreatedAtAction("Get", new { Id = enrolment.Id }, enrolment.ToResponse());
     }
 
     [HttpGet]
     [Route("/enrolments/{id}")]
-    public async Task<ActionResult<Enrolment?>> Get([FromRoute] Guid id)
+    public async Task<ActionResult<EnrolmentResponse?>> Get([FromRoute] Guid id)
     {
-        return await context.Enrolments.FindAsync(id);
+        return (await context.Enrolments.FindAsync(id))?.ToResponse();
     }
 }
