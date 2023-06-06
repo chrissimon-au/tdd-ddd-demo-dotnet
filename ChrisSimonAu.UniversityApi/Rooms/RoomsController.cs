@@ -10,7 +10,7 @@ public class RoomsController : ControllerBase
     public IActionResult Setup([FromBody] SetupRoomRequest request)
     {
         var room = Room.Setup(request);
-        return Created($"http://localhost/rooms/{room.Id}", room);
+        return CreatedAtAction("Get", new { Id = room.Id }, room);
     }
 
     [HttpGet]
