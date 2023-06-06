@@ -30,13 +30,7 @@ public class EnrolingController : ControllerBase
             return BadRequest();
         }
 
-        var numEnrolments = await context.Enrolments.CountAsync(e => e.CourseId == course.Id);
-        if (course?.Room?.WouldEnrolmentExceedCapacity(numEnrolments) ?? true)
-        {
-            return BadRequest();
-        }
-
-        var enrolment = new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId };
+        var enrolment = course.Enrol(student);
         
         await context.Enrolments.AddAsync(enrolment);
         await context.SaveChangesAsync();
