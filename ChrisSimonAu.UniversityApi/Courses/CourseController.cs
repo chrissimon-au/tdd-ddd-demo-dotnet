@@ -16,6 +16,11 @@ public class CoursesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Course>> IncludeInCatalog([FromBody] IncludeCourseInCatalogRequest request)
     {
+        var room = context.Rooms.Find(request.RoomId);
+        if (room == null) 
+        {
+            return BadRequest();
+        }
         var course = Course.IncludeInCatalog(request);
         await context.Courses.AddAsync(course);
         await context.SaveChangesAsync();
