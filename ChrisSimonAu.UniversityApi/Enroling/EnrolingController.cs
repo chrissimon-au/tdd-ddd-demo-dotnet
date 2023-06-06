@@ -18,8 +18,17 @@ public class EnrolingController : ControllerBase
     public async Task<ActionResult<Enrolment>> EnrolInCourse([FromRoute] Guid studentId, [FromBody] EnrolStudentInCourseRequest request)
     {
         var student = await context.Students.FindAsync(studentId);
-        return student == null ?
-            NotFound() :
-            Created("", new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId });
+        if (student == null)
+        {
+            return NotFound();
+        }
+        
+        var course = await context.Courses.FindAsync(request.CourseId);
+        if (course == null)
+        {
+            return BadRequest();
+        }
+        
+        return Created("", new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId });
     }
 }
