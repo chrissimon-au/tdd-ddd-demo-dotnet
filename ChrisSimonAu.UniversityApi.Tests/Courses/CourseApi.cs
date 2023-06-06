@@ -20,4 +20,11 @@ public class CourseApi
     {
         return new Uri($"http://localhost/courses/{id}");
     }
+
+    public async Task<(HttpResponseMessage, CourseResponse?)> GetCourse(Uri? courseLocation)
+    {
+        var response = await client.GetAsync(courseLocation);
+        var course = await response.Content.ReadFromJsonAsync<CourseResponse>();
+        return (response, course);
+    }
 }
