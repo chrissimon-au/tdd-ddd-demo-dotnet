@@ -29,6 +29,17 @@ public class EnrolingController : ControllerBase
             return BadRequest();
         }
         var enrolment = new Enrolment { Id = Guid.NewGuid(), StudentId = studentId, CourseId = request.CourseId };
+        
+        await context.Enrolments.AddAsync(enrolment);
+        await context.SaveChangesAsync();
+        
         return Created($"http://localhost/enrolments/{enrolment.Id}", enrolment);
+    }
+
+    [HttpGet]
+    [Route("/enrolments/{id}")]
+    public async Task<ActionResult<Enrolment?>> Get([FromRoute] Guid id)
+    {
+        return await context.Enrolments.FindAsync(id);
     }
 }
