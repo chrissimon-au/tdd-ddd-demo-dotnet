@@ -48,4 +48,28 @@ public class CourseTests : IClassFixture<WebApplicationFactory<Program>>
     {
         Assert.Equal(request.Name, response?.Name);
     }
+
+    [Theory]
+    [InlineData("Test Course")]
+    [InlineData("Another Course")]
+    public async Task GivenIHaveIncludedACourse_WhenICheckTheCourseDetails(string courseName)
+    {
+        var api = new CourseApi(_factory.CreateClient());
+
+        var request = new IncludeCourseInCatalogRequest { Name = courseName };
+
+        var (response, _) = await api.IncludeInCatalog(request);
+
+        var newCourseLocation = response.Headers.Location;
+
+        var (checkedResponse, checkedCourse) = await api.GetCourse(newCourseLocation);
+
+        ItShouldFindTheNewCourse(checkedResponse);
+        ItShouldConfirmCourseDetails(request, checkedCourse);
+    }
+
+    private void ItShouldFindTheNewCourse(HttpResponseMessage response)
+    {
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+    }
 }
