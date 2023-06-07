@@ -18,11 +18,19 @@ public class SchedulesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ScheduleResponse>> Schedule()
     {
-        var room = await this.context.Rooms.SingleAsync();
-        var course = await this.context.Courses.SingleAsync();
-        course.Room = room;
+        var courseEnrolments = await (
+            from enrolment in context.Enrolments
+            join course in context.Courses on enrolment.Course!.Id equals course.Id
+            group enrolment by course into ces
+            select new CourseEnrolment { Course = ces.Key, EnrolmentCount = ces.Count() }
+        ).ToListAsync();
+
+        var rooms = await context.Rooms.ToListAsync();
+
+        var proposedSchedule = Scheduler.ScheduleCourses(courseEnrolments, rooms);
+
         return Ok(new ScheduleResponse() {
-            ScheduledCourses = new List<CourseResponse>() { course.ToResponse() }
+            ScheduledCourses = proposedSchedule.Courses.Select(c => c.ToResponse())
         });
     }
 }
