@@ -2,29 +2,25 @@ namespace ChrisSimonAu.UniversityApi.Scheduling;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Courses;
 
 [ApiController]
 [Route("[controller]")]
 public class SchedulesController : ControllerBase
 {
     private UniversityContext context;
+    private readonly CourseEnrolmentQuery courseEnrolmentQuery;
 
-    public SchedulesController(UniversityContext context)
+    public SchedulesController(UniversityContext context,
+        CourseEnrolmentQuery courseEnrolmentQuery)
     {
         this.context = context;
+        this.courseEnrolmentQuery = courseEnrolmentQuery;
     }
 
     [HttpPost]
     public async Task<ActionResult<ScheduleResponse>> Schedule()
     {
-        var courseEnrolments = await (
-            from enrolment in context.Enrolments
-            join course in context.Courses on enrolment.Course!.Id equals course.Id
-            group enrolment by course into ces
-            select new CourseEnrolment { Course = ces.Key, EnrolmentCount = ces.Count() }
-        ).ToListAsync();
-
+        var courseEnrolments = await courseEnrolmentQuery.GetCourseEnrolments();
         var rooms = await context.Rooms.ToListAsync();
 
         var proposedSchedule = Scheduler.ScheduleCourses(courseEnrolments, rooms);
