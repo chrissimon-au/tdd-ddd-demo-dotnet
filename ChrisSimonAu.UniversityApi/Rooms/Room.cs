@@ -2,10 +2,9 @@ namespace ChrisSimonAu.UniversityApi.Rooms;
 
 public class Room
 {
-    public Guid Id { get; set; }
-    public string? Name { get; set; }
-
-    public int Capacity { get; set; }
+    public Guid Id { get; private set; }
+    public string? Name { get; private set; }
+    public int Capacity { get; private set; }
 
     public static Room Setup(SetupRoomRequest request)
     {
