@@ -4,5 +4,5 @@ using Courses;
 
 public class Schedule
 {
-    public required IList<Course> Courses { get; set; }
+    public IList<Course> Courses { get; set; } = new List<Course>();
 }

@@ -20,6 +20,11 @@ public class Course
         return Enrolment.StudentEnroled(student, this);
     }
 
+    public void AssignTo(Room room)
+    {
+        Room = room;
+    }
+
     public CourseResponse ToResponse()
     {
         return new CourseResponse
