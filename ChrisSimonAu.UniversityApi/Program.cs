@@ -2,6 +2,7 @@ using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using ChrisSimonAu.UniversityApi;
+using ChrisSimonAu.UniversityApi.Scheduling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ services.AddSingleton<DbConnection>(container =>
 
     return connection;
 });
+services.AddScoped<CourseEnrolmentQuery>();
 
 services.AddDbContext<UniversityContext>((container, options) =>
 {
