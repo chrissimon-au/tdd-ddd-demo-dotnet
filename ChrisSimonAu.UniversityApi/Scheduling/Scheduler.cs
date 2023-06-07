@@ -11,6 +11,9 @@ public class Scheduler
         {
             Courses = new List<Course>()
         };
+
+        courseEnrolments.Sort((ce1, ce2) => ce2.EnrolmentCount.CompareTo(ce1.EnrolmentCount));
+        rooms.Sort((r1, r2) => r2.Capacity.CompareTo(r1.Capacity));
         
         foreach (var courseEnrolmentRoom in courseEnrolments.Zip(rooms))
         {
