@@ -6,14 +6,19 @@ using ChrisSimonAu.UniversityApi.Rooms;
 
 public class SchedulerTests
 {
+    private CourseEnrolment NewCourseEnrolment(string name, int EnrolmentCount)
+    {
+        var course = Course.IncludeInCatalog(new IncludeCourseInCatalogRequest { Name = name });
+        return new CourseEnrolment { Course = course, EnrolmentCount = EnrolmentCount };
+    }
+
     [Fact]
     public void GivenSingleCourseSingleRoom_whenScheduling()
     {
         var scheduler = new Scheduler();
 
-        var course = Course.IncludeInCatalog(new IncludeCourseInCatalogRequest { Name = "Test Course" });
-        var courseEnrolment = new CourseEnrolment { Course = course, EnrolmentCount = 2 };
-        var courseEnrolments = new List<CourseEnrolment> { courseEnrolment };
+        var courseEnrolments = new List<CourseEnrolment> { NewCourseEnrolment("Test Course", 2) };
+
         var room = Room.Setup(new SetupRoomRequest { Name = "Test Room", Capacity = 2 });
         var rooms = new List<Room> { room };
 
@@ -33,10 +38,8 @@ public class SchedulerTests
     {
         var scheduler = new Scheduler();
 
-        var course1 = Course.IncludeInCatalog(new IncludeCourseInCatalogRequest { Name = "First Course" });
-        var courseEnrolment1 = new CourseEnrolment { Course = course1, EnrolmentCount = 4 };
-        var course2 = Course.IncludeInCatalog(new IncludeCourseInCatalogRequest { Name = "Second Course" });
-        var courseEnrolment2 = new CourseEnrolment { Course = course2, EnrolmentCount = 2 };
+        var courseEnrolment1 = NewCourseEnrolment("First Course", 4);
+        var courseEnrolment2 = NewCourseEnrolment("Second Course", 2);
         var courseEnrolments = new List<CourseEnrolment> { courseEnrolment1, courseEnrolment2 };
 
         var room1 = Room.Setup(new SetupRoomRequest { Name = "Room1", Capacity = 2 });
@@ -49,8 +52,8 @@ public class SchedulerTests
 
         Assert.Equal(2, scheduledCourses.Count());
 
-        var scheduledCourse1 = scheduledCourses.Single(c => c.Id == course1.Id);
-        var scheduledCourse2 = scheduledCourses.Single(c => c.Id == course2.Id);
+        var scheduledCourse1 = scheduledCourses.Single(c => c.Id == courseEnrolment1.Course.Id);
+        var scheduledCourse2 = scheduledCourses.Single(c => c.Id == courseEnrolment2.Course.Id);
 
         Assert.Equal(room2.Id, scheduledCourse1?.Room?.Id);
         Assert.Equal(room1.Id, scheduledCourse2?.Room?.Id);
