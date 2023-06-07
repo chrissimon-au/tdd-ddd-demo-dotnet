@@ -12,8 +12,8 @@ public class Room
         return new Room { Id = Guid.NewGuid(), Name = request.Name, Capacity = request.Capacity };
     }
 
-    public bool WouldEnrolmentExceedCapacity(int numEnrolments)
+    public bool CanCourseFit(int numEnrolments)
     {
-        return numEnrolments + 1 > Capacity;
+        return numEnrolments <= Capacity;
     }
 }
