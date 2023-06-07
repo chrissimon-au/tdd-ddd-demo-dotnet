@@ -10,6 +10,7 @@ public class Course
     public string? Name { get; set; }
     public virtual Room? Room { get; set; }
     public virtual IEnumerable<Enrolment>? Enrolments { get; set; }
+    
     public static Course IncludeInCatalog(IncludeCourseInCatalogRequest request)
     {
         return new Course { Id = Guid.NewGuid(), Name = request.Name };
@@ -20,9 +21,10 @@ public class Course
         return Enrolment.StudentEnroled(student, this);
     }
 
-    public void AssignTo(Room room)
+    public bool AssignTo(Room? room)
     {
         Room = room;
+        return room != null;
     }
 
     public CourseResponse ToResponse()

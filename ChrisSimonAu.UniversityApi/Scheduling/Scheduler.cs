@@ -5,21 +5,25 @@ using Courses;
 
 public class Scheduler
 {
-    private static Comparison<CourseEnrolment> ByMostPopular = (ce1, ce2) => ce2.EnrolmentCount.CompareTo(ce1.EnrolmentCount);
-    private static Comparison<Room> ByMostSpacious =  (r1, r2) => r2.Capacity.CompareTo(r1.Capacity);
+    private static Comparison<CourseEnrolment> ByLeastPopular = (ce1, ce2) => ce1.EnrolmentCount.CompareTo(ce2.EnrolmentCount);
+    private static Comparison<Room> ByLeastSpacious =  (r1, r2) => r1.Capacity.CompareTo(r2.Capacity);
 
     public static Schedule ScheduleCourses(List<CourseEnrolment> courseEnrolments, List<Room> rooms)
     {
         var schedule = new Schedule();
 
-        courseEnrolments.Sort(ByMostPopular);
-        rooms.Sort(ByMostSpacious);
+        courseEnrolments.Sort(ByLeastPopular);
+        rooms.Sort(ByLeastSpacious);
         
-        foreach (var (courseEnrolment, room) in courseEnrolments.Zip(rooms))
+        foreach (var courseEnrolment in courseEnrolments)
         {
             var course = courseEnrolment.Course;
-            course.AssignTo(room);
-            schedule.Courses.Add(course);
+            var candidateRoom = rooms.FirstOrDefault(r => r.CanCourseFit(courseEnrolment.EnrolmentCount));
+            if (course.AssignTo(candidateRoom))
+            {
+                schedule.Courses.Add(course);
+                rooms.Remove(candidateRoom!);
+            }
         }
         return schedule;
     }
