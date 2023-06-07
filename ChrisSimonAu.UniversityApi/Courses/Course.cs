@@ -6,10 +6,10 @@ using Students;
 
 public class Course
 {
-    public Guid Id { get; set; }
-    public string? Name { get; set; }
-    public virtual Room? Room { get; set; }
-    public virtual IEnumerable<Enrolment>? Enrolments { get; set; }
+    public Guid Id { get; private set; }
+    public string? Name { get; private set; }
+    public virtual Room? Room { get; private set; }
+    public virtual IEnumerable<Enrolment>? Enrolments { get; private set; }
     
     public static Course IncludeInCatalog(IncludeCourseInCatalogRequest request)
     {
