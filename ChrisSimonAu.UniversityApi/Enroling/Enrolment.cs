@@ -5,9 +5,9 @@ using Courses;
 
 public class Enrolment
 {
-    public Guid? Id { get; set; }
-    public virtual Student? Student { get; set; }
-    public virtual Course? Course { get; set; }
+    public Guid? Id { get; private set; }
+    public virtual Student? Student { get; private set; }
+    public virtual Course? Course { get; private set; }
 
     public static Enrolment StudentEnroled(Student student, Course course)
     {
